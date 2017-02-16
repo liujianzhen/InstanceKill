@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.instanceKill.dao.SuccessKilledDao">
+  	<!-- 目的：为Dao接口方法提供sql语句配置 -->
+  	<insert id="insertSuccessKilled">
+  		<!-- 通过ignore声明当主键冲突报错时，不执行插入 -->
+  		insert ignore into t_successKilled(instanceKill_id,user_phone,state)
+  		values(#{instanceKillId},#{userPhone},0)
+  	</insert>
+  	<select id="queryByIdWithInstanceKillId" resultType="SuccessKilled">
+  		<!-- 根据ID查询SuccessKilled并携带秒杀产品对象实体 -->
+  		<!-- 如何告诉Mybatis把结果映射到SuccessKilled同时映射 instanceKill属性-->
+  		select
+  		ts.instanceKill_id,
+  		ts.user_phone,
+  		ts.state,
+  		ts.create_time,
+  		tk.instanceKill_id "instanceKill.instanceKill_id",
+  		tk.name "instanceKill.name",
+  		tk.number "instanceKill.number",
+  		tk.start_time "instanceKill.start_time",
+  		tk.end_time "instanceKill.end_time",
+  		tk.create_time "instanceKill.create_time"
+  		from t_successkilled ts
+  		inner join t_instanceKill tk on tk.instanceKill_id=ts.instanceKill_id
+  		where tk.instanceKill_id=#{instanceKillId} 
+  		and ts.user_phone=#{userPhone}
+  	</select>
+  </mapper>
